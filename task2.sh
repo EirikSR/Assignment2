@@ -4,7 +4,7 @@ echo "Welcome to the timer!"
 printf "$ACTIONS" #Posible actions are stored as a string
 
 run=false #True if timer is running, false if not
-
+LOGFILE=".local/share/log.txt"
 while true; do #Loop to contain the program
 read input
 VALID_INPUT=false #In order to check for non-actions
@@ -31,17 +31,17 @@ if [ input != "" ]; then #Actions here
         if [ "$run" = true ]; then
             STOP=$(date -u) #Date in correct format for log
             echo "Timer started at:" $STOP
-            echo "START" $START >> .local/share/log.txt
-            echo "LABEL" $LABEL >> .local/share/log.txt
-            echo "STOP" $STOP >> .local/share/log.txt
-            echo "" >> .local/share/log.txt
+            echo "START" $START >> $LOGFILE
+            echo "LABEL" $LABEL >> $LOGFILE
+            echo "STOP" $STOP >> $LOGFILE
+            echo "" >> $LOGFILE
             echo "Log updated"
             run=false
         else
             echo "Error, no timer running"
         fi
     fi
-    
+
     if [ "$input" = "status" ]; then #Suplies status, start time if timer is active, message otherwise
         VALID_INPUT=true
         if [ $run = true ]; then
@@ -64,7 +64,7 @@ if [ input != "" ]; then #Actions here
         LOG_DATA=() #Empty array
         while IFS= read -r line; do
             LOG_DATA+=("Text read from file: $line") #adds each line from file to array
-        done < .local/share/log.txt
+        done < $LOGFILE
         alenght=${#LOG_DATA[@]} #Length of array for for-loop
         
         for (( i=0; i<${alenght}; i+=4 ));do #each log input is 4 lines
